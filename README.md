@@ -63,11 +63,16 @@ Before running any of the code in this repository, make sure you have the follow
 
     Python 3.10 or later (recommended version: 3.10)
 
-    The required packages as listed in the respective project’s requirements.txt file (if available). To install dependencies for a specific project, use:
+    The required packages are:  matplotlib, manim, and random.
+    and can be downloaded with 
+    ```
+    bash
 
-    pip install -r requirements.txt
+    pip install [package]
+    ```
 
-    (Optional) A LaTeX distribution for projects that involve rendering text using LaTeX (e.g., projects using Manim).
+
+    
 
 Usage
 
