@@ -66,12 +66,12 @@ Before running any of the code in this repository, make sure you have the follow
     The required packages are:  matplotlib, manim, and random.
     and can be downloaded with:
 
-    
-    ```
-    bash
 
-    pip install [package]
-    ```
+```
+bash
+
+pip install [package]
+```
 
 
     
