@@ -1,4 +1,4 @@
-from Matrix import Matrix
+from Practice_chap_3.Matrix import Matrix
 
 
 def matrix_equal(matrix1, matrix2):

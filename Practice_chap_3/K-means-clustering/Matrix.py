@@ -2,7 +2,10 @@ class Matrix:
     def __init__(self, list_of_lists):
         self.matrix = list_of_lists
         self.num_rows = len(list_of_lists)
-        self.num_cols = len(list_of_lists[0])
+        try :
+            self.num_cols = len(list_of_lists[0])
+        except IndexError:
+            self.num_cols = 0
         self.dims = (self.num_rows, self.num_cols)
         self.cols = [list(col) for col in zip(*self.matrix)]
         self.rows = [i for i in self.matrix]
@@ -15,6 +18,30 @@ class Matrix:
                 if abs(self.matrix[i][j] - other.matrix[i][j]) > 1e-9:  # Small tolerance
                     return False
         return True
+    def euclidean_distance(self, other):
+        if self.num_cols != other.num_cols:
+            raise ValueError("The dims dont math for multiplication")
+        if self.num_rows != other.num_rows:
+            if self.num_rows > other.num_rows and other.num_rows == 1:
+                distance = 0
+                for i in range(self.num_rows):
+                    for j in range(self.num_cols):
+                        distance += (self.matrix[i][j] - other.matrix[0][j]) ** 2
+                return distance ** 0.5
+
+        else:
+            distance = 0
+            for i in range(self.num_rows):
+                for j in range(self.num_cols):
+                    distance += (self.matrix[i][j] - other.matrix[i][j]) ** 2
+            return distance ** 0.5
+        
+    def v_stack(matrices):
+        stacked_data = []
+        for mat in matrices:
+            stacked_data.extend(mat.matrix)
+        return Matrix(stacked_data)
+
         
 
     def show(self):
@@ -104,6 +131,11 @@ class Matrix:
         for i in range(len(arr1)):
             dot_product += arr1[i] * arr2[i]
         return dot_product
+    def mean_cols(self):
+        cols = self.get_cols()
+        means = [sum(col) / len(col) for col in cols]
+        output = Matrix([means])
+        return output
 
     def recursive_determinant(self):
         if self.num_rows != self.num_cols:
@@ -184,7 +216,7 @@ class Matrix:
 
     def append(self, matrix : list):
         if len(matrix) != len(self.matrix):
-            raise Exception("Not same row length and therefore can't be added", f"{matrix.num_rows}, {self.matrix.num_rows}")
+            raise Exception("Not same row length and therefore can't be added", f"{len(matrix)}, {self.matrix.num_rows}")
         else:
             for i,row in enumerate(self.matrix):
                 for r in matrix[i]:
@@ -192,12 +224,15 @@ class Matrix:
         return self
     def prepend(self, matrix : list):
         if len(matrix) != len(self.matrix):
-            raise Exception("Not same row length and therefore can't be added", f"{matrix.num_rows}, {self.matrix.num_rows}")
+            raise Exception("Not same row length and therefore can't be added", f"{len(matrix)}, {self.num_rows}")
         else:
             for i,row in enumerate(self.matrix):
                 self.matrix[i] = matrix[i] + self.matrix[i]
         return self
-    
+    def remove_col(self,n):
+        for i,row in enumerate(self.matrix):
+            self.matrix[i].pop(n)
+        return self
     
     def RREF_inverse(self):
         self.shape = (self.num_cols, self.num_rows)
