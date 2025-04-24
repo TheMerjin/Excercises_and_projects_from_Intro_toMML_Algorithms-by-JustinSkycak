@@ -40,6 +40,7 @@ Folder Structure
 
 The repository is organized as follows:
 
+
 ├── project1_algorithm_name/
 │   ├── README.md            # Detailed instructions and description for this project
 │   ├── src/                 # Source code for the project
