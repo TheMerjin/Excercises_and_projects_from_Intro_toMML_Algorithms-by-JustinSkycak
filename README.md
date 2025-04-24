@@ -1,7 +1,8 @@
 Exercises and Projects from Intro to MML Algorithms by Justin Skycak
 
 Welcome to the Exercises and Projects from Intro to MML Algorithms by Justin Skycak repository. This repository contains my completed exercises and projects based on the Intro to MML Algorithms course by Justin Skycak. It is intended to provide practical implementations, showcase learning progress, and offer sample code for various algorithms covered in the course.
-Table of Contents
+
+Table of Contents:
 
     Overview
 
