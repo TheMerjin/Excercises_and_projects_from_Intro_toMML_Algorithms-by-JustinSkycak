@@ -64,12 +64,14 @@ Before running any of the code in this repository, make sure you have the follow
     Python 3.10 or later (recommended version: 3.10)
 
     The required packages are:  matplotlib, manim, and random.
-    and can be downloaded with 
-    ```
-    bash
+    and can be downloaded with:
 
-    pip install [package]
-    ```
+
+```
+bash
+
+pip install [package]
+```
 
 
     
