@@ -24,6 +24,9 @@ class Matrix:
             print(i)
         return self.matrix
 
+    def to_array(self):
+        return self.matrix
+
     def get_cols(self):
         return [list(col) for col in zip(*self.matrix)]
 
