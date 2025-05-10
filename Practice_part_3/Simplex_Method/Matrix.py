@@ -219,14 +219,13 @@ class Matrix:
         return self
 
     def RREF_inverse(self):
-        self.shape = (self.num_cols, self.num_rows)
         if self.num_cols != self.num_rows:
             raise ValueError
 
         Im = self.generate_indentity_matrix(self.num_rows)
         self.append(Im.matrix)
         self.RREF()
-        output = Matrix(self.get_cols()[3:]).transpose()
+        output = Matrix(self.get_cols()[self.num_rows :]).transpose()
         return output
 
     def RREF_determinant(self):
@@ -262,19 +261,6 @@ class Matrix:
 
 if __name__ == "__main__":
 
-    A = Matrix([[2, 3, 4], [6, 8, 7]])
-    print("A:")
-    print(A.cols)
-    print("swap rows")
-    print("/n")
-    A.show()
-    At = A.transpose()
-    print("At:")
-    At.show()
-
-    print("test: row-echolon/n")
-    L = Matrix([[0, 2, 3], [0, 1, 0], [4, 5, 6]])
-    print("result")
-    L.show()
-    G = L.generate_indentity_matrix(10)
-    print(L.RREF_determinant())
+    A = [[26, 8], [8, 3]]
+    A_matrix = Matrix(A)
+    A_matrix.RREF_inverse().show()
