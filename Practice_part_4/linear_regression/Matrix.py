@@ -7,20 +7,26 @@ class Matrix:
         self.cols = [list(col) for col in zip(*self.matrix)]
         self.rows = [i for i in self.matrix]
         self.shape = (self.num_cols, self.num_rows)
+
     def __eq__(self, other):
         if self.num_rows != other.num_rows or self.num_cols != other.num_cols:
-            return False        
+            return False
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                if abs(self.matrix[i][j] - other.matrix[i][j]) > 1e-9:  # Small tolerance
+                if (
+                    abs(self.matrix[i][j] - other.matrix[i][j]) > 1e-9
+                ):  # Small tolerance
                     return False
         return True
-        
+
+    def dims(self):
+        return (self.num_rows, self.num_cols)
 
     def show(self):
         for i in self.matrix:
             print(i)
         return self.matrix
+
     def get_cols(self):
         return [list(col) for col in zip(*self.matrix)]
 
@@ -80,7 +86,7 @@ class Matrix:
         return self.add(neg_other)
 
     def matrix_multiply(self, other):
-        if self.num_cols != other.num_rows or self.num_rows != other.num_cols:
+        if self.num_cols != other.num_rows:
             raise Exception(
                 "The dims dont math for multiplication",
                 "self.dims",
@@ -134,42 +140,49 @@ class Matrix:
             if i != row
         ]
         return Matrix(minor)
-    
+
     def is_pivot(self, start_row, col):
         cols = [list(col) for col in zip(*self.matrix)]
-        for row in range(start_row,len(cols[col])):
+        for row in range(start_row, len(cols[col])):
             if self.matrix[row][col] != 0:
                 return row
         return None
-    
+
     def normalize_row(self, pivot_index, row):
-        self.matrix[row] = [ p/ self.matrix[row] [pivot_index] for p in self.matrix[row] ]
+        self.matrix[row] = [p / self.matrix[row][pivot_index] for p in self.matrix[row]]
         return self
-    
+
     def swap_rows(self, index1, index2):
-        self.matrix[index1], self.matrix[index2] = self.matrix[index2], self.matrix[index1]
+        self.matrix[index1], self.matrix[index2] = (
+            self.matrix[index2],
+            self.matrix[index1],
+        )
         return self
-    
+
     def subtract_rows(self, pivot_row, other_row, factor: int):
         f = factor
-        self.matrix[other_row]  =  [ o-p*f for p, o in zip(self.matrix[pivot_row] ,self.matrix[other_row])]
+        self.matrix[other_row] = [
+            o - p * f for p, o in zip(self.matrix[pivot_row], self.matrix[other_row])
+        ]
         return self
+
     def RREF(self):
         row_index = 0
         for col in range(self.num_cols):
-            pivot_row = self.is_pivot(row_index,col)
+            pivot_row = self.is_pivot(row_index, col)
             if pivot_row is None:
                 continue
             if pivot_row != row_index:
                 self.swap_rows(pivot_row, row_index)
             self.normalize_row(col, row_index)
             cols = self.get_cols()
-            for i,row in enumerate(cols[col]):
-                if (row) !=0 and i != row_index:
-                    self.subtract_rows(row_index, i,row )
+            for i, row in enumerate(cols[col]):
+                if (row) != 0 and i != row_index:
+                    self.subtract_rows(row_index, i, row)
             row_index += 1
 
         return self
+
     def generate_indentity_matrix(self, dim):
         output = []
         for row in range(dim):
@@ -182,76 +195,70 @@ class Matrix:
 
         return Matrix(output)
 
-    def append(self, matrix : list):
+    def append(self, matrix: list):
         if len(matrix) != len(self.matrix):
-            raise Exception("Not same row length and therefore can't be added", f"{matrix.num_rows}, {self.matrix.num_rows}")
+            raise Exception(
+                "Not same row length and therefore can't be added",
+                f"{matrix.num_rows}, {self.matrix.num_rows}",
+            )
         else:
-            for i,row in enumerate(self.matrix):
+            for i, row in enumerate(self.matrix):
                 for r in matrix[i]:
                     self.matrix[i].append(r)
         return self
-    def prepend(self, matrix : list):
+
+    def prepend(self, matrix: list):
         if len(matrix) != len(self.matrix):
-            raise Exception("Not same row length and therefore can't be added", f"{matrix.num_rows}, {self.matrix.num_rows}")
+            raise Exception(
+                "Not same row length and therefore can't be added",
+                f"{matrix.num_rows}, {self.matrix.num_rows}",
+            )
         else:
-            for i,row in enumerate(self.matrix):
+            for i, row in enumerate(self.matrix):
                 self.matrix[i] = matrix[i] + self.matrix[i]
         return self
-    
-    
+
     def RREF_inverse(self):
+        n = self.num_rows
         self.shape = (self.num_cols, self.num_rows)
         if self.num_cols != self.num_rows:
             raise ValueError
-        
-        Im = self.generate_indentity_matrix(self.num_rows)
+
+        Im = self.generate_indentity_matrix(n)
         self.append(Im.matrix)
         self.RREF()
-        output = Matrix(self.get_cols()[3:]).transpose()
-        return (output)
-    
+        output = Matrix(self.get_cols()[n:]).transpose()
+        return output
+
     def RREF_determinant(self):
         for row in self.matrix:
-        # Check if the entire row is zeros
-            if all(col == 0 for col in row):  # Check if all elements in the row are zero
+            # Check if the entire row is zeros
+            if all(
+                col == 0 for col in row
+            ):  # Check if all elements in the row are zero
                 return 0  # If any row is all zeros, the matrix is singular
 
         determinant = 1
         row_index = 0
         for col in range(self.num_cols):
-            pivot_row = self.is_pivot(row_index,col)
+            pivot_row = self.is_pivot(row_index, col)
             if pivot_row is None:
                 continue
             if pivot_row != row_index:
                 self.swap_rows(pivot_row, row_index)
                 determinant *= -1
             pivot = self.matrix[row_index][col]
-            
+
             determinant = determinant * pivot
             self.normalize_row(col, row_index)
-            
+
             cols = self.get_cols()
-            for i,row in enumerate(cols[col]):
-                if (row) !=0 and i != row_index:
-                    self.subtract_rows(row_index, i,row )
+            for i, row in enumerate(cols[col]):
+                if (row) != 0 and i != row_index:
+                    self.subtract_rows(row_index, i, row)
             row_index += 1
 
         return determinant
-        
-
-
-
-
-                
- 
-
-        
-
-        
-            
-        
-
-
 
 
 if __name__ == "__main__":
@@ -267,14 +274,8 @@ if __name__ == "__main__":
     At.show()
 
     print("test: row-echolon/n")
-    L = Matrix([[0,2,3],
-                 [0,1,0],
-                 [4,5,6]
-    ]
-                 )
+    L = Matrix([[0, 2, 3], [0, 1, 0], [4, 5, 6]])
     print("result")
     L.show()
     G = L.generate_indentity_matrix(10)
     print(L.RREF_determinant())
-    
-
